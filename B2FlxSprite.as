@@ -11,7 +11,7 @@ package
 	{
 		private var ratio:Number = 30;
 
-		public var _def:b2PolygonDef;
+		public var _fixDef:b2FixtureDef;
 		public var _bodyDef:b2BodyDef
 		public var _obj:b2Body;
 				
@@ -26,6 +26,8 @@ package
 		
 		//Default angle
 		public var _angle:Number = 0;
+		//Default body type
+		public var _type:uint = b2Body.b2_dynamicBody;
 		
 		
 		public function B2FlxSprite(X:Number, Y:Number, Width:Number, Height:Number, w:b2World):void
@@ -46,21 +48,23 @@ package
 		}
 		
 		public function createBody():void
-		{
-			_def = new b2PolygonDef();
-			_def.SetAsBox((_width/2) / ratio, (_height/2) /ratio);
-			_def.friction = _friction;
-			_def.restitution = _restitution;
-			_def.density = _density;
+		{			
+			var boxShape:b2PolygonShape = new b2PolygonShape();
+			boxShape.SetAsBox((_width/2) / ratio, (_height/2) /ratio);
+
+			_fixDef = new b2FixtureDef();
+			_fixDef.density = _density;
+			_fixDef.restitution = _restitution;
+			_fixDef.friction = _friction;						
+			_fixDef.shape = boxShape;
 			
 			_bodyDef = new b2BodyDef();
 			_bodyDef.position.Set((x + (_width/2)) / ratio, (y + (_height/2)) / ratio);
 			_bodyDef.angle = _angle * (Math.PI / 180);
+			_bodyDef.type = _type;
 			
 			_obj = _world.CreateBody(_bodyDef);
-			_obj.CreateShape(_def);
-			_obj.SetMassFromShapes();
-
+			_obj.CreateFixture(_fixDef);
 		}
 	}
 }

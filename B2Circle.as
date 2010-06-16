@@ -9,12 +9,13 @@ package
 
 	public class B2Circle extends FlxSprite
 	{
-		public var _def:b2CircleDef;
+		private var ratio:Number = 30;
+
+		public var _fixDef:b2FixtureDef;
 		public var _bodyDef:b2BodyDef
 		public var _obj:b2Body;
-		private var ratio:Number = 30;
+
 		private var _radius:Number;
-		
 		private var _world:b2World;
 		
 		//Physics params default value
@@ -24,6 +25,8 @@ package
 		
 		//Default angle
 		public var _angle:Number = 0;
+		//Default body type
+		public var _type:uint = b2Body.b2_dynamicBody;
 		
 		
 		public function B2Circle(X:Number, Y:Number, Radius:Number, w:b2World):void
@@ -44,19 +47,19 @@ package
 		
 		public function createBody():void
 		{
-			_def = new b2CircleDef();
-			_def.radius = _radius/ratio;
-			_def.friction = _friction;
-			_def.restitution = _restitution;
-			_def.density = _density;
+			_fixDef = new b2FixtureDef();
+			_fixDef.friction = _friction;
+			_fixDef.restitution = _restitution;
+			_fixDef.density = _density;
+			_fixDef.shape = new b2CircleShape(_radius/ratio);
 			
 			_bodyDef = new b2BodyDef();
 			_bodyDef.position.Set((x + (_radius)) / ratio, (y + (_radius/2)) / ratio);
 			_bodyDef.angle = _angle * (Math.PI / 180);
+			_bodyDef.type = _type;
 			
 			_obj = _world.CreateBody(_bodyDef);
-			_obj.CreateShape(_def);
-			_obj.SetMassFromShapes();
+			_obj.CreateFixture(_fixDef);
 		}
 	}
 }

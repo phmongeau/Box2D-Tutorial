@@ -22,62 +22,65 @@ package
 		//ration of pixels to meters
 		public static const RATIO:Number = 30;
 		
-		//private var cube:B2FlxSprite;
-		//private var _rot:B2FlxSprite;
+		private var cube:B2FlxSprite;
+		private var _rot:B2FlxSprite;
 		
 		override public function create():void
 		{
 			//Set up the world
 			setupWorld();
 			//Create Walls and floor
-			//createWallsAndFloor();
+			createWallsAndFloor();
+			
 			//Add a crate			
-			//cube = new B2FlxSprite(320, 240, 20, 20, _world);
-			//cube.angle = 30;
-			//cube.createBody();
-			//cube.loadGraphic(ImgCube, false, false, 20, 20);
+			cube = new B2FlxSprite(320, 240, 20, 20, _world);
+			cube.angle = 30;
+			cube.createBody();
+			cube.loadGraphic(ImgCube, false, false, 20, 20);
 			
 			//Add a ball
-			//var ball:B2Circle = new B2Circle(350, 240, 10, _world);
-			//ball.createBody();
-			//ball.loadGraphic(ImgBall, false, false, 20, 20);
+			var ball:B2Circle = new B2Circle(350, 240, 10, _world);
+			ball.createBody();
+			ball.loadGraphic(ImgBall, false, false, 20, 20);
 			
 			//Add rotating sprite
-			//_rot = new B2FlxSprite(320, 280, 150, 20, _world);
-			//_rot._density = 0.0;
-			//_rot._angle = 30;
-			//_rot.createBody();
-			//_rot.loadGraphic(ImgRect, false, false, 150, 20);
+			_rot = new B2FlxSprite(320, 280, 150, 20, _world);
+			_rot._density = 0.0;
+			_rot._angle = 30;
+			_rot._type = b2Body.b2_kinematicBody;
+			_rot.createBody();
+			_rot.loadGraphic(ImgRect, false, false, 150, 20);
 			
-			//this.add(cube);
-			//this.add(ball);
-			//this.add(_rot);
+			this.add(cube);
+			this.add(ball);
+			this.add(_rot);
 			
-			//debugDraw();
+			debugDraw();
 			
 		}
 		
 		override public function update():void
 		{
 			_world.Step(FlxG.elapsed, 10, 10);
+			FlxG.log(cube.y.toString());
 			super.update();			
 		}
-		/*
+		
 		private function debugDraw():void
 		{
 			var spriteToDrawOn:Sprite = new Sprite();
 			addChild(spriteToDrawOn);
 			
 			var artistForHire:b2DebugDraw = new b2DebugDraw();
-			artistForHire.m_sprite = spriteToDrawOn;
-			artistForHire.m_drawScale = 30;
+			artistForHire.SetSprite(spriteToDrawOn);
+			artistForHire.SetXFormScale(30);
 			artistForHire.SetFlags(b2DebugDraw.e_shapeBit);
-			artistForHire.m_lineThickness = 2.0;
-			artistForHire.m_fillAlpha = 0.6;
+			artistForHire.SetLineThickness(2.0);
+			artistForHire.SetFillAlpha(0.6);
 			
 			_world.SetDebugDraw(artistForHire);
 		}
-		*/
+		
 		
 		private function setupWorld():void
 		{
@@ -99,9 +102,10 @@ package
 		private function createWallsAndFloor():void
 		{			
 			//Floor:
-			//var floor:B2FlxTileblock = new B2FlxTileblock(0, 400, 640, 80, _world)
-			//floor.loadGraphic(ImgCube);
-			//add(floor);
+			var floor:B2FlxTileblock = new B2FlxTileblock(0, 400, 640, 80, _world)
+			floor.createBody();
+			floor.loadGraphic(ImgCube);
+			add(floor);
 		}		
 	}
 }
