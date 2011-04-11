@@ -24,13 +24,12 @@ package
 		
 		private var cube:B2FlxSprite;
 		private var _rot:B2FlxSprite;
+		private var ball:B2Circle;
 		
 		override public function create():void
 		{
 			//Set up the world
 			setupWorld();
-			//Create Walls and floor
-			createWallsAndFloor();
 			
 			//Add a crate			
 			cube = new B2FlxSprite(320, 240, 20, 20, _world);
@@ -39,7 +38,8 @@ package
 			cube.loadGraphic(ImgCube, false, false, 20, 20);
 			
 			//Add a ball
-			var ball:B2Circle = new B2Circle(350, 240, 10, _world);
+			ball = new B2Circle(350, 240, 10, _world);
+			ball._density = 0.9;
 			ball.createBody();
 			ball.loadGraphic(ImgBall, false, false, 20, 20);
 			
@@ -51,22 +51,47 @@ package
 			_rot.createBody();
 			_rot.loadGraphic(ImgRect, false, false, 150, 20);
 			
+			//Floor:
+			var floor:B2FlxTileblock = new B2FlxTileblock(0, 400, 640, 80, _world)
+			floor.createBody();
+			floor.loadTiles(ImgCube);
+			
 			this.add(cube);
 			this.add(ball);
 			this.add(_rot);
+			this.add(floor);
 			
-			debugDraw();
+			//debugDraw();
 			
 		}
 		
 		override public function update():void
 		{
 			_world.Step(FlxG.elapsed, 10, 10);
-			FlxG.log(cube.y.toString());
-			super.update();			
+			super.update();
+			
+			if(FlxG.keys.pressed("RIGHT"))
+			{
+				var angularVelocity:Number = _rot._obj.GetAngularVelocity();
+				_rot._obj.SetAngularVelocity(angularVelocity + 5 * (Math.PI/180));
+			}
+			else if(FlxG.keys.pressed("LEFT"))
+			{
+				angularVelocity = _rot._obj.GetAngularVelocity();
+				_rot._obj.SetAngularVelocity(angularVelocity - 5 * (Math.PI/180));
+			}
+			else
+			{
+				angularVelocity = _rot._obj.GetAngularVelocity();
+				_rot._obj.SetAngularVelocity(angularVelocity * 0.95);
+			}
+			if(FlxG.keys.pressed("SPACE"))
+			{
+				ball._obj.SetPosition(new b2Vec2(350/RATIO, 240/RATIO))
+			}
 		}
 		
-		private function debugDraw():void
+		/*private function debugDraw():void
 		{
 			var spriteToDrawOn:Sprite = new Sprite();
 			addChild(spriteToDrawOn);
@@ -79,16 +104,11 @@ package
 			artistForHire.SetFillAlpha(0.6);
 			
 			_world.SetDebugDraw(artistForHire);
-		}
+		}*/
 		
 		
 		private function setupWorld():void
-		{
-			//size of the univers
-			//var universeSize:b2AABB = new b2AABB();
-			//universeSize.lowerBound.Set(-3000/RATIO, -3000/RATIO);
-			//universeSize.upperBound.Set(3000/RATIO, 3000/RATIO);
-			
+		{			
 			//gravity
 			var gravity:b2Vec2 = new b2Vec2(0, 9.8);
 			
@@ -97,15 +117,6 @@ package
 			
 			_world = new b2World(gravity, ignoreSleeping);
 			
-		}
-		
-		private function createWallsAndFloor():void
-		{			
-			//Floor:
-			var floor:B2FlxTileblock = new B2FlxTileblock(0, 400, 640, 80, _world)
-			floor.createBody();
-			floor.loadGraphic(ImgCube);
-			add(floor);
 		}		
 	}
 }

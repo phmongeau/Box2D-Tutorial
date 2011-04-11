@@ -36,7 +36,7 @@ package
 
 			_width = Width;
 			_height = Height;
-			_world = w
+			_world = w;
 		}
 		
 		override public function update():void
