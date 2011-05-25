@@ -9,6 +9,7 @@ package
 		public function Box2DTutorial()
 		{
 			super(640,480,MenuState,1);
+			forceDebugger = true;
 		}
 	}
 }
