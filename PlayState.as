@@ -6,9 +6,11 @@ package
 	import flash.events.Event;
 
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Joints.*;
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import Box2D.Common.b2Settings;
 
 
 	public class PlayState extends FlxState
@@ -32,13 +34,13 @@ package
 			setupWorld();
 			
 			//Add a crate			
-			cube = new B2FlxSprite(320, 240, 20, 20, _world);
+			cube = new B2FlxSprite(420, 150, 20, 20, _world);
 			cube.angle = 30;
 			cube.createBody();
 			cube.loadGraphic(ImgCube, false, false, 20, 20);
 			
 			//Add a ball
-			ball = new B2Circle(350, 240, 10, _world);
+			ball = new B2Circle(450, 150, 10, _world);
 			ball._density = 0.9;
 			ball.createBody();
 			ball.loadGraphic(ImgBall, false, false, 20, 20);
@@ -50,6 +52,17 @@ package
 			_rot._type = b2Body.b2_kinematicBody;
 			_rot.createBody();
 			_rot.loadGraphic(ImgRect, false, false, 150, 20);
+
+			var revJointDef:b2RevoluteJointDef = new b2RevoluteJointDef();
+			//revJointDef.Initialize(ball._obj, cube._obj, ball._obj.GetWorldCenter());
+			revJointDef.Initialize(cube._obj, ball._obj, cube._obj.GetWorldCenter());
+			revJointDef.maxMotorTorque = 1.0;
+			revJointDef.enableMotor = true;
+			_world.CreateJoint(revJointDef);
+
+			//var distJointDef:b2DistanceJointDef = new b2DistanceJointDef();
+			//distJointDef.Initialize(ball._obj, cube._obj, ball._obj.GetWorldCenter(), cube._obj.GetWorldCenter());
+			//_world.CreateJoint(distJointDef);
 			
 			//Floor:
 			var floor:B2FlxTileblock = new B2FlxTileblock(0, 400, 640, 80, _world)
